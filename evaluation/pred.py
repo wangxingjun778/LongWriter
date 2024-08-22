@@ -1,6 +1,7 @@
 import requests
 import time, os, json
-from transformers import AutoTokenizer, AutoModelForCausalLM
+# from transformers import AutoTokenizer, AutoModelForCausalLM
+from modelscope import AutoTokenizer, AutoModelForCausalLM
 import torch
 import numpy as np
 import random
@@ -13,6 +14,7 @@ import re
 import torch.distributed as dist
 import torch.multiprocessing as mp
 
+
 def count_words(text):
     chinese_characters = re.findall(r'[\u4e00-\u9fff]', text)
     english_words = re.findall(r'\b[a-zA-Z]+\b', text)
@@ -23,6 +25,7 @@ def count_words(text):
     total_count = chinese_char_count + english_word_count
     
     return total_count
+
 
 def get_pred(rank, world_size, data, path, max_new_tokens, temperature, tokenizer, fout):
     device = torch.device(f'cuda:{rank}')
@@ -50,6 +53,7 @@ def get_pred(rank, world_size, data, path, max_new_tokens, temperature, tokenize
         fout.flush()
         print(response)
 
+
 def seed_everything(seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
@@ -58,6 +62,7 @@ def seed_everything(seed):
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
     torch.cuda.manual_seed_all(seed)
+
 
 if __name__ == '__main__':
     seed_everything(42)
